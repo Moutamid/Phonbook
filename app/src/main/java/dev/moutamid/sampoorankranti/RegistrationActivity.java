@@ -1,17 +1,24 @@
 package dev.moutamid.sampoorankranti;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -20,12 +27,157 @@ public class RegistrationActivity extends AppCompatActivity {
     private Button signUpBtn;
     private TextView alreadyAccountBtnSignUp;
 
+    private ProgressDialog progressDialog;
+    private FirebaseAuth mAuth;
+
+    private void startSignUp() {
+
+        //Getting the Text from the email and password EditTexts
+        String email = emailEtSignUp.getText().toString();
+        String password = passwordEtSignUp.getText().toString();
+        String confirmPassword = confirmPasswordEtSignUp.getText().toString();
+        final String nickname = nameEtSignUp.getText().toString();
+
+        final EditText emailFieldSignUp = emailEtSignUp;
+        final EditText passwordFieldSignUp = passwordEtSignUp;
+
+        //Setting Progress Dialog Message
+        progressDialog.setMessage("Please wait...");
+        progressDialog.show();
+
+        // TextFields are not empty then this if statement occur
+
+        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(nickname)) {
+            //if text fields are not empty
+
+
+            // If the email is not valid
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                progressDialog.dismiss();
+
+                emailFieldSignUp.setError("Please enter a valid email!");
+                emailFieldSignUp.requestFocus();
+                return;
+            } else {
+
+                if (password.length() >= 6) {
+
+                    //Starting to Sign Up the user...
+                    mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    //When the Information is passed to the server and completes processing
+                                    progressDialog.dismiss();
+
+
+                                    if (!task.isSuccessful()) {
+
+                                        if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+
+                                            // Checking if the email is already registered
+                                            // Setting error of low password
+                                            emailFieldSignUp.setError("User is already registered!");
+                                            emailFieldSignUp.requestFocus();
+                                            return;
+
+                                            //Toast.makeText(SignUpActivity.this, "User is already registered!", Toast.LENGTH_SHORT).show();
+
+                                        } else {
+
+                                            //Creating a Toast to show the error of not logging in the user
+                                            // ---- SHOULD ALSO CHECK IF USER IS ALREADY REGISTERED ----
+                                            Toast.makeText(RegistrationActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    } else {
+                                        //Task is successful..
+
+
+                                        progressDialog.dismiss();
+
+
+                                        finish();
+                                        Intent intent = new Intent(RegistrationActivity.this, SecondRegistrationActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+
+                                        // Finishing Sign Up Activity
+
+                                    }
+
+                                    // ...
+                                }
+                            });
+
+                } else {
+                    progressDialog.dismiss();
+
+                    // Setting error of low password
+                    passwordFieldSignUp.setError("Minimum length of password must be 6");
+                    passwordFieldSignUp.requestFocus();
+                    return;
+
+                    //Toast.makeText(LoginActivity.this, "Minimum Length of password must be 6", Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+        } else if (TextUtils.isEmpty(email)) {
+            //if text fields are emtpy..
+
+            progressDialog.dismiss();
+
+            emailFieldSignUp.setError("Email is required!");
+            emailFieldSignUp.requestFocus();
+            return;
+
+            //Toast.makeText(this, "Fields are Empty!", Toast.LENGTH_LONG).show();
+
+        } else if (TextUtils.isEmpty(password)) {
+            //if Password field are emtpy..
+
+            progressDialog.dismiss();
+
+            passwordFieldSignUp.setError("Password is required!");
+            passwordFieldSignUp.requestFocus();
+            return;
+
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            //if Email Address is Invalid..
+
+            progressDialog.dismiss();
+
+            emailFieldSignUp.setError("Please enter a valid email!");
+            emailFieldSignUp.requestFocus();
+            return;
+        } else if (TextUtils.isEmpty(nickname)) {
+            //if Nickname field are emtpy..
+
+            progressDialog.dismiss();
+
+            nameEtSignUp.setError("Name is required!");
+            nameEtSignUp.requestFocus();
+            return;
+        } else if (!password.equals(confirmPassword)) {
+            //if Nickname field are emtpy..
+
+            progressDialog.dismiss();
+
+            confirmPasswordEtSignUp.setError("Password doesn't match!");
+            confirmPasswordEtSignUp.requestFocus();
+            return;
+        }
+    }
+
     private void SignUpBtnClickListener() {
         signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(RegistrationActivity.this, nameEtSignUp.getText().toString() + emailEtSignUp.getText().toString() + passwordEtSignUp.getText().toString() + confirmPasswordEtSignUp.getText().toString(), Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(RegistrationActivity.this, SecondRegistrationActivity.class));
+
+                startSignUp();
+
+//                Toast.makeText(RegistrationActivity.this, nameEtSignUp.getText().toString() + emailEtSignUp.getText().toString() + passwordEtSignUp.getText().toString() + confirmPasswordEtSignUp.getText().toString(), Toast.LENGTH_SHORT).show();
+//                startActivity(new Intent(RegistrationActivity.this, SecondRegistrationActivity.class));
             }
         });
 
@@ -44,11 +196,109 @@ public class RegistrationActivity extends AppCompatActivity {
     private Button loginBtn;
     private TextView donthaveanaccountBtnLogin;
 
+    private void startSignIn() {
+        //Getting the Text from the email and password EditTexts
+        String email = emailEtLogin.getText().toString();
+        String password = passwordEtLogin.getText().toString();
+
+        //Setting Progress Dialog Message
+        progressDialog.setMessage("Please wait...");
+        progressDialog.show();
+
+        // TextFields are not empty then this if statement occur
+
+        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
+            //if text fields are not empty
+
+            // If the email is not valid
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                progressDialog.dismiss();
+
+                emailEtLogin.setError("Please enter a valid email!");
+                emailEtLogin.requestFocus();
+
+            } else {
+
+                if (password.length() >= 6) {
+
+                    //Starting to signing the user In
+                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            //When the Information is passed to the server and completes processing
+
+
+                            if (task.isSuccessful()) {
+                                //Task is successful..
+
+                                progressDialog.dismiss();
+
+
+                                finish();
+                                Intent intent = new Intent(RegistrationActivity.this, DashboardActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+
+                            } else {
+                                // Task is not successful
+                                progressDialog.dismiss();
+
+                                //Creating a Toast to show the error of not logging in the user
+                                Toast.makeText(RegistrationActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+
+
+                            }
+
+                        }
+                    });
+
+                } else {
+                    progressDialog.dismiss();
+
+                    // Setting error of low password
+                    passwordEtLogin.setError("Minimum length of password must be 6");
+                    passwordEtLogin.requestFocus();
+
+                    //Toast.makeText(LoginActivity.this, "Minimum Length of password must be 6", Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+        } else if (TextUtils.isEmpty(email)) {
+            //if text fields are emtpy..
+
+            progressDialog.dismiss();
+
+            emailEtLogin.setError("Email is required!");
+            emailEtLogin.requestFocus();
+
+            //Toast.makeText(this, "Fields are Empty!", Toast.LENGTH_LONG).show();
+
+        } else if (TextUtils.isEmpty(password)) {
+            //if text fields are emtpy..
+
+            progressDialog.dismiss();
+
+            passwordEtLogin.setError("Password is required!");
+            passwordEtLogin.requestFocus();
+
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            progressDialog.dismiss();
+
+            emailEtLogin.setError("Please enter a valid email!");
+            emailEtLogin.requestFocus();
+        }
+    }
+
     private void LoginBtnClickListener() {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(RegistrationActivity.this, emailEtLogin.getText().toString() + passwordEtLogin.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                startSignIn();
+
+//                startActivity(new Intent(RegistrationActivity.this, SecondRegistrationActivity.class));
+//                Toast.makeText(RegistrationActivity.this, emailEtLogin.getText().toString() + passwordEtLogin.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         });
         donthaveanaccountBtnLogin.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +324,9 @@ public class RegistrationActivity extends AppCompatActivity {
         passwordEtLogin = findViewById(R.id.editTextPassword_login);
         loginBtn = findViewById(R.id.cirLoginButton_login);
         donthaveanaccountBtnLogin = findViewById(R.id.donthaveanaccountbtn_login);
+
+        progressDialog = new ProgressDialog(this);
+        mAuth = FirebaseAuth.getInstance();
     }
 
 

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "800647762492",
+    "project_id": "phonbook-258fd",
+    "storage_bucket": "phonbook-258fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800647762492:android:d95bf281201f456da22939",
+        "android_client_info": {
+          "package_name": "dev.moutamid.sampoorankranti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "800647762492-pfejaj8n17rn4khcvko66og191ti95fj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.moutamid.sampoorankranti",
+            "certificate_hash": "efe5cbd1dd97785aa46e320d94d69d5bcd5909b0"
+          }
+        },
+        {
+          "client_id": "800647762492-j48i6aa1mcmk68ckn6c09eu9qjmngbv7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxlu4zSROH4pgfipDUavT6RKw-Ax8LuPU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "800647762492-j48i6aa1mcmk68ckn6c09eu9qjmngbv7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

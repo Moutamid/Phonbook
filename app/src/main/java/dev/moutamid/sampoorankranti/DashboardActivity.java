@@ -1,16 +1,17 @@
 package dev.moutamid.sampoorankranti;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.FrameLayout;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -39,6 +40,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         navigationView = findViewById(R.id.navigationview_id);
         navigationView.setNavigationItemSelectedListener(this);
         //urduSwitch = (SwitchCompat) navigationView.getMenu().findItem(R.id.nav_urdu_id).getActionView();
+
+        findViewById(R.id.notificationbtndashboard).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(DashboardActivity.this, NotoficationActivity.class));
+            }
+        });
+
+        findViewById(R.id.menubtndashboard).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
 
     }
 

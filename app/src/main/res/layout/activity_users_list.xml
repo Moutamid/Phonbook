@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UsersListActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topconstraintuserlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <me.itangqi.waveloadingview.WaveLoadingView
+            android:id="@+id/waveloadingviewuserlist"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentTop="true"
+            android:rotation="180"
+            app:layout_constraintBottom_toBottomOf="@id/toplinearlayout2userlist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:wlv_borderWidth="0dp"
+            app:wlv_progressValue="80"
+            app:wlv_round_rectangle="false"
+            app:wlv_shapeType="square"
+            app:wlv_triangle_direction="north"
+            app:wlv_waveAmplitude="100"
+            app:wlv_waveColor="@color/darkSkyBlue" />
+
+        <LinearLayout
+            android:id="@+id/toplinearlayout2userlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="Users List"
+                android:textColor="@color/white"
+                android:textSize="27sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/topconstraintuserlist"
+        android:id="@+id/recyclerviewuserlist"/>
+
+</RelativeLayout>
