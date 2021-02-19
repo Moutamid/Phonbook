@@ -1,8 +1,10 @@
 package dev.moutamid.sampoorankranti;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,9 +36,9 @@ public class SecondRegistrationActivity extends AppCompatActivity {
     private static final String TAG = "SecondRegistrationActiv";
     private CircleImageView profileImage;
     private TextView mNoEt, districtEt, villageEt, wardEt, categoryEt;
-    private String mNoStr, districtStr, villageStr, wardStr, categoryStr = null;
+    private String nickname, mNoStr, districtStr, villageStr, wardStr, categoryStr = null;
     private Button submitButton;
-
+    private Utils utils = new Utils();
     private FirebaseAuth mAuth;
 
     private ProgressDialog progressDialog;
@@ -71,7 +73,9 @@ public class SecondRegistrationActivity extends AppCompatActivity {
             progressDialog.show();
 
             final StorageReference filePath = storageReference
-                    .child(mAuth.getCurrentUser().getDisplayName() + imageUri.getLastPathSegment());
+                    .child(mAuth.getCurrentUser().getUid() + imageUri.getLastPathSegment());
+//            final StorageReference filePath = storageReference.child("sliders")
+//                    .child(imageUri.getLastPathSegment());
 
             filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -81,6 +85,8 @@ public class SecondRegistrationActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri photoUrl) {
 
+//                            TextView othertxt = findViewById(R.id.othertextregistration);
+//                            othertxt.setText(photoUrl.toString());
                             profileImage.setImageURI(data.getData());
                             profileImageUrl = photoUrl.toString();
                             progressDialog.dismiss();
@@ -152,8 +158,10 @@ public class SecondRegistrationActivity extends AppCompatActivity {
 
     private static class UserCompleteDetailsModel {
         private String name, email, profileUrl, mNo, district, village, ward, category;
+        private boolean isEmailVerified;
 
-        public UserCompleteDetailsModel(String name, String email, String profileUrl, String mNo, String district, String village, String ward, String category) {
+        public UserCompleteDetailsModel(String name, String email, String profileUrl, String mNo, String district, String village, String ward, String category, boolean isEmailVerified) {
+            this.isEmailVerified = isEmailVerified;
             this.name = name;
             this.email = email;
             this.profileUrl = profileUrl;
@@ -162,6 +170,14 @@ public class SecondRegistrationActivity extends AppCompatActivity {
             this.village = village;
             this.ward = ward;
             this.category = category;
+        }
+
+        public boolean isEmailVerified() {
+            return isEmailVerified;
+        }
+
+        public void setEmailVerified(boolean emailVerified) {
+            isEmailVerified = emailVerified;
         }
 
         public String getName() {
@@ -247,7 +263,7 @@ public class SecondRegistrationActivity extends AppCompatActivity {
 
         UserCompleteDetailsModel details = new UserCompleteDetailsModel();
 
-        details.setName(auth.getCurrentUser().getDisplayName());
+        details.setName(nickname);
         details.setEmail(auth.getCurrentUser().getEmail());
         details.setProfileUrl(profileImageUrl);
         details.setmNo(mNoStr);
@@ -255,6 +271,7 @@ public class SecondRegistrationActivity extends AppCompatActivity {
         details.setVillage(villageStr);
         details.setWard(wardStr);
         details.setCategory(categoryStr);
+        details.setEmailVerified(false);
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).setValue(details)
@@ -264,7 +281,12 @@ public class SecondRegistrationActivity extends AppCompatActivity {
 
                         if (task.isSuccessful()) {
 
+                            final SharedPreferences sharedPreferences = SecondRegistrationActivity.this.getSharedPreferences("dev.moutamid.sampoorankranti", Context.MODE_PRIVATE);
+                            sharedPreferences.edit().putString("myprofilelink", profileImageUrl).apply();
+
                             progressDialog.dismiss();
+
+                            utils.storeBoolean(SecondRegistrationActivity.this, "isLoggedIn", true);
 
                             finish();
                             Intent intent = new Intent(SecondRegistrationActivity.this, DashboardActivity.class);
@@ -284,6 +306,10 @@ public class SecondRegistrationActivity extends AppCompatActivity {
     }
 
     private boolean fieldsNotExist() {
+        if (nickname == null) {
+            Toast.makeText(this, "No username found!", Toast.LENGTH_SHORT).show();
+            return true;
+        }
         if (profileImageUrl == null) {
             Toast.makeText(this, "Please select a picture!", Toast.LENGTH_SHORT).show();
             return true;
@@ -328,6 +354,28 @@ public class SecondRegistrationActivity extends AppCompatActivity {
         loadingView.setAnimDuration(10000);
 
         mAuth = FirebaseAuth.getInstance();
+
+        final SharedPreferences sharedPreferences = getSharedPreferences("dev.moutamid.sampoorankranti", Context.MODE_PRIVATE);
+
+        if (!sharedPreferences.getString("myprofilelink", "error").equals("error")) {
+
+            finish();
+            Intent intent = new Intent(SecondRegistrationActivity.this, DashboardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+
+        }
+
+        if (getIntent().hasExtra("username")) {
+
+            nickname = getIntent().getStringExtra("username");
+
+        } else {
+
+            nickname = mAuth.getCurrentUser().getDisplayName();
+
+        }
+//TODO: STORE USERNAME BY CUTTING THROUGH THE EMAIL BY SSUBSTRING
     }
 
     private void showVillagesOptionsDialog(final TextView tv, final CharSequence[] items) {
@@ -384,10 +432,57 @@ public class SecondRegistrationActivity extends AppCompatActivity {
 
         initViews();
 
+        if (checkCurrentActivity()){
+            return;
+        }
+
         setProfileImageClickListener();
 
         setSubmitButtonClickListener();
 
         //showVillagesOptionsDialog();
+    }
+
+    private boolean checkCurrentActivity() {
+
+        //current_activity
+        //main
+        //second
+        //dashboard
+
+        if (utils.getStoredString(SecondRegistrationActivity.this, "current_activity").equals("Error")) {
+
+            finish();
+            Intent intent = new Intent(SecondRegistrationActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+
+        }
+
+        utils.storeString(SecondRegistrationActivity.this, "current_activity", "second");
+
+        if (utils.getStoredString(SecondRegistrationActivity.this, "current_activity").equals("main")) {
+
+            finish();
+            Intent intent = new Intent(SecondRegistrationActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+
+        }
+
+        if (utils.getStoredString(SecondRegistrationActivity.this, "current_activity").equals("dashboard")) {
+
+            finish();
+            Intent intent = new Intent(SecondRegistrationActivity.this, DashboardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+
+            return true;
+
+        }
+
+        return false;
     }
 }

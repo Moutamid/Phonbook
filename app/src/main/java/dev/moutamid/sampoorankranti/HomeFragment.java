@@ -1,12 +1,16 @@
 package dev.moutamid.sampoorankranti;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
@@ -33,14 +38,24 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         sliderLayout = view.findViewById(R.id.sliderLayout_fragamenthome);
 
+        String link1 = "https://firebasestorage.googleapis.com/v0/b/phonbook-258fd.appspot.com/o/profileImages%2Fsliders%2Fimage%3A2831?alt=media&token=4456ec94-e19a-4447-9cdd-ae4a3e1c913a";
+        String link2 = "https://firebasestorage.googleapis.com/v0/b/phonbook-258fd.appspot.com/o/profileImages%2Fsliders%2Fimage%3A2832?alt=media&token=d64b020e-ee3c-49f0-9793-5168cba838ee";
+        String link3 = "https://firebasestorage.googleapis.com/v0/b/phonbook-258fd.appspot.com/o/profileImages%2Fsliders%2Fimage%3A2833?alt=media&token=4d2954e7-acdc-4d15-a8ee-01907c0b9ee2";
+
         DefaultSliderView defaultSliderView = new DefaultSliderView(getActivity());
-        defaultSliderView.image("https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Alligator.jpg/220px-Alligator.jpg")
-                .setOnSliderClickListener(OnDefaultSliderClickListener("https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Alligator.jpg/220px-Alligator.jpg"));
+        defaultSliderView.image(link1)
+                .setOnSliderClickListener(OnDefaultSliderClickListener());
+//        DefaultSliderView defaultSliderView1 = new DefaultSliderView(getActivity());
+//        defaultSliderView.image(link2)
+//                .setOnSliderClickListener(OnDefaultSliderClickListener());
+//        DefaultSliderView defaultSliderView3 = new DefaultSliderView(getActivity());
+//        defaultSliderView.image(link3)
+//                .setOnSliderClickListener(OnDefaultSliderClickListener());
 
         sliderLayout.addSlider(defaultSliderView);
         sliderLayout.addSlider(defaultSliderView);
         sliderLayout.addSlider(defaultSliderView);
-        sliderLayout.addSlider(defaultSliderView);
+
 
         view.findViewById(R.id.chatbtnfragmenthome).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +66,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         view.findViewById(R.id.infobtnfragmenthome).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), InfoActivity.class));
+                startActivity(new Intent(getActivity(), FilterChatActivity.class));
             }
         });
         view.findViewById(R.id.advertisebtnfragmenthome).setOnClickListener(new View.OnClickListener() {
@@ -67,7 +82,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        getmyusernameandsaveit();
+//        getmyusernameandsaveit();
 
         return view;
     }
@@ -85,7 +100,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-             sharedPreferences.edit().putString("myprofilelink", snapshot.child("profileUrl").getValue(String.class)).apply();
+                sharedPreferences.edit().putString("myprofilelink", snapshot.child("profileUrl").getValue(String.class)).apply();
 
 
             }
@@ -97,14 +112,28 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private BaseSliderView.OnSliderClickListener OnDefaultSliderClickListener(final String link) {
+    private BaseSliderView.OnSliderClickListener OnDefaultSliderClickListener() {
         return new BaseSliderView.OnSliderClickListener() {
             @Override
             public void onSliderClick(BaseSliderView slider) {
 
-                Intent intent = new Intent(getActivity(), SliderImageViewerActivity.class);
-                intent.putExtra("imageurl", slider.getUrl());
-                startActivity(intent);
+                final Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.layout_zoom_image);
+
+                ImageView okayBtn = dialog.findViewById(R.id.zoom_imagevieew);
+
+                Picasso.with(getActivity()).load(slider.getUrl()).into(okayBtn);
+
+                okayBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+
 
             }
         };

@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".ChatsListActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No chats!"
+        android:layout_centerInParent="true"
+        android:textSize="20sp"
+        android:visibility="gone"
+        android:id="@+id/nochatchatslist"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topconstraintchatslist"
         android:layout_width="match_parent"

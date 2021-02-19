@@ -1,35 +1,23 @@
 package dev.moutamid.sampoorankranti;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 
 import me.itangqi.waveloadingview.WaveLoadingView;
 
 public class FilterChatActivity extends AppCompatActivity {
 
-    private ArrayList<UserCompleteDetailsModel> userDetailsList = new ArrayList<>();
+//    private ArrayList<UserCompleteDetailsModel> userDetailsList = new ArrayList<>();
 
-    private ProgressDialog progressDialog;
+//    private ProgressDialog progressDialog;
 
     private TextView mNoEt, districtEt, villageEt, wardEt, categoryEt;
     private String mNoStr, districtStr, villageStr, wardStr, categoryStr = null;
@@ -126,9 +114,9 @@ public class FilterChatActivity extends AppCompatActivity {
         filterButton = findViewById(R.id.cirUploadDetailsBtn__registerfilterchat);
         filterButton.setOnClickListener(filterButtonClickListener());
 
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Loading...");
-        progressDialog.setCancelable(false);
+//        progressDialog = new ProgressDialog(this);
+//        progressDialog.setMessage("Loading...");
+//        progressDialog.setCancelable(false);
 
         WaveLoadingView loadingView = findViewById(R.id.waveloadingviewfilterchat);
         loadingView.setAnimDuration(10000);
@@ -144,9 +132,17 @@ public class FilterChatActivity extends AppCompatActivity {
                     return;
                 }
 
-                progressDialog.show();
+//                progressDialog.show();
 
-                searchUserByQuery("category", categoryStr);
+                Intent intent = new Intent(FilterChatActivity.this, UsersListActivity.class);
+//                private String mNoStr, districtStr, villageStr, wardStr, categoryStr = null;
+                intent.putExtra("mNo", mNoStr);
+                intent.putExtra("district", districtStr);
+                intent.putExtra("village", villageStr);
+                intent.putExtra("ward", wardStr);
+                intent.putExtra("category", categoryStr);
+
+                startActivity(intent);
 
             }
         };
@@ -184,183 +180,6 @@ public class FilterChatActivity extends AppCompatActivity {
 
         initViews();
 
-
-    }
-
-    private void searchUserByQuery(String orderByChild, String equalTo) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("users").orderByChild(orderByChild).equalTo(equalTo)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                        userDetailsList.clear();
-
-                        if (snapshot.exists()) {
-
-                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-
-                                String uid = dataSnapshot.getKey();
-                                UserCompleteDetailsModel detailsModel = dataSnapshot.getValue(UserCompleteDetailsModel.class);
-                                detailsModel.setUid(uid);
-
-                                userDetailsList.add(detailsModel);
-
-                                //Toast.makeText(getActivity(), key, Toast.LENGTH_SHORT).show();
-                            }
-
-                            // FOR FILTERING THE ENTRIES WITH M_NO
-                            for (int i = 0; i <= userDetailsList.size() - 1; i++) {
-
-                                if (!userDetailsList.get(i).getmNo().equals(mNoStr)) {
-                                    userDetailsList.remove(i);
-                                }
-
-                            }
-                            // FOR FILTERING THE ENTRIES WITH DISTRICTS
-                            for (int i = 0; i <= userDetailsList.size() - 1; i++) {
-
-                                if (!userDetailsList.get(i).getDistrict().equals(districtStr)) {
-                                    userDetailsList.remove(i);
-                                }
-
-                            }
-                            // FOR FILTERING THE ENTRIES WITH VILLAGES
-                            for (int i = 0; i <= userDetailsList.size() - 1; i++) {
-
-                                if (!userDetailsList.get(i).getVillage().equals(villageStr)) {
-                                    userDetailsList.remove(i);
-                                }
-
-                            }
-                            // FOR FILTERING THE ENTRIES WITH WARD
-                            for (int i = 0; i <= userDetailsList.size() - 1; i++) {
-
-                                if (!userDetailsList.get(i).getWard().equals(wardStr)) {
-                                    userDetailsList.remove(i);
-                                }
-
-                            }
-
-                            if (userDetailsList.size() == 0) {
-                                progressDialog.dismiss();
-                                Toast.makeText(FilterChatActivity.this, "No user found with this filter!", Toast.LENGTH_SHORT).show();
-                            } else {
-
-                                progressDialog.dismiss();
-
-                                // TRANSFERRING THE LIST TO THE OTHER ACTIVITY
-                                Intent intent = new Intent(FilterChatActivity.this, UsersListActivity.class);
-                                Bundle args = new Bundle();
-                                args.putSerializable("USERSLIST", (Serializable)userDetailsList);
-                                intent.putExtra("BUNDLE", args);
-                                startActivity(intent);
-
-                            }
-
-                        } else {
-                            progressDialog.dismiss();
-                            Toast.makeText(FilterChatActivity.this, "No user exist!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.i("TAG", "onCancelled: verify if member exists" + error.toException().getMessage());
-                        Toast.makeText(FilterChatActivity.this, error.toException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private static class UserCompleteDetailsModel {
-        private String uid, name, email, profileUrl, mNo, district, village, ward, category;
-
-        public UserCompleteDetailsModel(String uid, String name, String email, String profileUrl, String mNo, String district, String village, String ward, String category) {
-            this.uid = uid;
-            this.name = name;
-            this.email = email;
-            this.profileUrl = profileUrl;
-            this.mNo = mNo;
-            this.district = district;
-            this.village = village;
-            this.ward = ward;
-            this.category = category;
-        }
-
-        public String getUid() {
-            return uid;
-        }
-
-        public void setUid(String uid) {
-            this.uid = uid;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getProfileUrl() {
-            return profileUrl;
-        }
-
-        public void setProfileUrl(String profileUrl) {
-            this.profileUrl = profileUrl;
-        }
-
-        public String getmNo() {
-            return mNo;
-        }
-
-        public void setmNo(String mNo) {
-            this.mNo = mNo;
-        }
-
-        public String getDistrict() {
-            return district;
-        }
-
-        public void setDistrict(String district) {
-            this.district = district;
-        }
-
-        public String getVillage() {
-            return village;
-        }
-
-        public void setVillage(String village) {
-            this.village = village;
-        }
-
-        public String getWard() {
-            return ward;
-        }
-
-        public void setWard(String ward) {
-            this.ward = ward;
-        }
-
-        public String getCategory() {
-            return category;
-        }
-
-        public void setCategory(String category) {
-            this.category = category;
-        }
-
-        UserCompleteDetailsModel() {
-        }
 
     }
 }

@@ -1,8 +1,301 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".InfoActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topconstraintactivityinfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <me.itangqi.waveloadingview.WaveLoadingView
+            android:id="@+id/waveloadingviewactivityinfo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentTop="true"
+            android:rotation="180"
+            app:layout_constraintBottom_toBottomOf="@id/toplinearlayout2activityinfo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:wlv_borderWidth="0dp"
+            app:wlv_progressValue="80"
+            app:wlv_round_rectangle="false"
+            app:wlv_shapeType="circle"
+            app:wlv_triangle_direction="north"
+            app:wlv_waveAmplitude="100"
+            app:wlv_waveColor="@color/darkSkyBlue" />
+
+        <LinearLayout
+            android:id="@+id/toplinearlayout2activityinfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="Information"
+                android:textColor="@color/white"
+                android:textSize="27sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topconstraintactivityinfo"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/signuplinearlayoutactivityinfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    style="@style/parent"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="@dimen/loginViewsMargin"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center_horizontal"
+                    android:text="Please select category and area to send information."
+                    android:textColor="@color/primaryTextColor"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/textInputPassword12265activityinfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/loginViewsMargin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/editTextCategoryactivityinfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="EdittextListenersactivityinfo"
+                        android:tag="category"
+                        android:text="Category"
+                        android:textColor="@color/greyishblue"
+                        android:textSize="20sp" />
+
+                    <View
+                        android:layout_width="30dp"
+                        android:layout_height="0dp" />
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:src="@drawable/ic_baseline_arrow_drop_down_24" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/textInputPassword1224activityinfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/loginViewsMargin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/editTextdistrict_activityinfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="EdittextListenersactivityinfo"
+                        android:tag="district"
+                        android:text="District"
+                        android:textColor="@color/greyishblue"
+                        android:textSize="20sp" />
+
+                    <View
+                        android:layout_width="30dp"
+                        android:layout_height="0dp" />
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:src="@drawable/ic_baseline_arrow_drop_down_24" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/textInputPassword1225activityinfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/loginViewsMargin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/editTextvillage_activityinfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="EdittextListenersactivityinfo"
+                        android:tag="village"
+                        android:text="Village"
+                        android:textColor="@color/greyishblue"
+                        android:textSize="20sp" />
+
+                    <View
+                        android:layout_width="30dp"
+                        android:layout_height="0dp" />
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:src="@drawable/ic_baseline_arrow_drop_down_24" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/textInputPassword1226activityinfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/loginViewsMargin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/editTextWard_activityinfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="EdittextListenersactivityinfo"
+                        android:tag="ward"
+                        android:text="Ward"
+                        android:textColor="@color/greyishblue"
+                        android:textSize="20sp" />
+
+                    <View
+                        android:layout_width="30dp"
+                        android:layout_height="0dp" />
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:src="@drawable/ic_baseline_arrow_drop_down_24" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/textGetLocationLayoutactivityinfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/loginViewsMargin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textviewGetlocation_activityinfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="EdittextListenersactivityinfo"
+                        android:tag="getLocation"
+                        android:text="Please help me here"
+                        android:textColor="@color/greyishblue"
+                        android:textSize="20sp" />
+
+                    <View
+                        android:layout_width="30dp"
+                        android:layout_height="0dp" />
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:src="@drawable/ic_baseline_arrow_drop_down_24" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/numberEdittextactivityinfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter your number"
+                    android:inputType="number"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/greyishblue"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/loginViewsMargin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="checkboxItemClicked"
+                        android:src="@drawable/ic_baseline_arrow_drop_down_24" />
+
+                    <View
+                        android:layout_width="10dp"
+                        android:layout_height="0dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:tag="getLocation"
+                        android:text="Please tick the box to show your mobile number."
+                        android:textColor="@color/greyishblue"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/cirUploadDetailsBtn_activityinfo"
+                    style="@style/loginButton"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="30dp"
+                    android:text="Submit" />
+
+
+            </LinearLayout>
+
+        </ScrollView>
+    </LinearLayout>
+
+</RelativeLayout>

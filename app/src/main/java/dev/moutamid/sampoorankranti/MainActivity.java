@@ -35,8 +35,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 1;
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth mAuth;
+    private Utils utils = new Utils();
     private DatabaseReference mDatabaseUsers;
     private ProgressDialog progressDialog;
+
     public void changeStatusBarColor() {
 
         // Changing the color of status bar
@@ -63,13 +65,17 @@ public class MainActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
 
-        if (mAuth.getCurrentUser() != null){
-            finish();
-            Intent intent = new Intent(MainActivity.this, SecondRegistrationActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+        if (checkCurrentActivity()){
             return;
         }
+
+//        if (mAuth.getCurrentUser() != null){
+//            finish();
+//            Intent intent = new Intent(MainActivity.this, SecondRegistrationActivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//            return;
+//        }
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -113,6 +119,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private boolean checkCurrentActivity() {
+
+        //current_activity
+        //main
+        //second
+        //dashboard
+
+        utils.storeString(MainActivity.this, "current_activity", "main");
+
+        if (utils.getStoredString(MainActivity.this, "current_activity").equals("second")) {
+
+            finish();
+            Intent intent = new Intent(MainActivity.this, SecondRegistrationActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+
+        }
+        if (utils.getStoredString(MainActivity.this, "current_activity").equals("dashboard")) {
+
+            finish();
+            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+return true;
+
+        }
+
+        return false;
     }
 
     public void signInWithGoogle() {
@@ -170,6 +207,8 @@ public class MainActivity extends AppCompatActivity {
 
                             progressDialog.dismiss();
 
+                            utils.storeString(MainActivity.this, "userEmail", mAuth.getCurrentUser().getEmail());
+
                             finish();
                             Intent intent = new Intent(MainActivity.this, SecondRegistrationActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -188,8 +227,6 @@ public class MainActivity extends AppCompatActivity {
                 });
 
     }
-
-
 
 
 }

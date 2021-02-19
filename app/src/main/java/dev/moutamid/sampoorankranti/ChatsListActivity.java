@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -49,9 +50,9 @@ public class ChatsListActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference();
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference1.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: executed");
@@ -72,7 +73,7 @@ public class ChatsListActivity extends AppCompatActivity {
                 for (int position = 0; position <= chatsName.size() - 1; position++) {
                     Log.d(TAG, "onDataChange: loop executed");
 
-                    if (chatsName.get(position).toLowerCase().contains(auth.getCurrentUser().getUid())) {
+                    if (chatsName.get(position).contains(auth.getCurrentUser().getUid())) {
 
                         userChats.add(chatsName.get(position));
                         Log.d(TAG, "onDataChange: matching name added in userChats " + chatsName.get(position));
@@ -85,6 +86,8 @@ public class ChatsListActivity extends AppCompatActivity {
 
                     String myString = userChats.get(position);
                     String[] splitString = myString.split("_");
+
+                    Log.i(TAG, "onDataChange: "+ Arrays.toString(splitString));
 
                     String firstName = splitString[0];
                     String secondName = splitString[1];
@@ -188,6 +191,11 @@ public class ChatsListActivity extends AppCompatActivity {
 
         scrollRecyclerViewToEnd();
 
+        if (adapter.getItemCount() == 0) {
+
+            findViewById(R.id.nochatchatslist).setVisibility(View.VISIBLE);
+
+        }
     }
 
     private void scrollRecyclerViewToEnd() {
@@ -213,6 +221,7 @@ public class ChatsListActivity extends AppCompatActivity {
 
             Picasso.with(ChatsListActivity.this)
                     .load(users.get(holder.getAdapterPosition()).getProfileUrl())
+                    .placeholder(R.color.lighterGrey)
                     .into(holder.profileImageview);
 
             holder.parentLayout.setOnClickListener(new View.OnClickListener() {
@@ -220,7 +229,7 @@ public class ChatsListActivity extends AppCompatActivity {
                 public void onClick(View v) {
 
                     Intent intent = new Intent(ChatsListActivity.this, ConversationActivity.class);
-                    intent.putExtra("chatName", users.get(holder.getAdapterPosition()).getChatName());
+                    intent.putExtra("chatName", userChats.get(holder.getAdapterPosition()));
                     intent.putExtra("userName", users.get(holder.getAdapterPosition()).getName());
                     intent.putExtra("userImage", users.get(holder.getAdapterPosition()).getProfileUrl());
                     startActivity(intent);

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -150,6 +151,7 @@ public class NotoficationActivity extends AppCompatActivity {
 
             Picasso.with(NotoficationActivity.this)
                     .load(currentRequestsArrayList.get(holder.getAdapterPosition()).getProfileUrl())
+                    .placeholder(R.color.lighterGrey)
                     .into(holder.profileImageview);
 
             holder.acceptBtn.setOnClickListener(new View.OnClickListener() {
@@ -170,11 +172,22 @@ public class NotoficationActivity extends AppCompatActivity {
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    Intent intent = new Intent(NotoficationActivity.this, ConversationActivity.class);
-                                    intent.putExtra("chatName", auth.getCurrentUser().getUid() + "_" + currentRequestsArrayList.get(holder.getAdapterPosition()).getUid());
-                                    intent.putExtra("userName", currentRequestsArrayList.get(holder.getAdapterPosition()).getName());
-                                    intent.putExtra("userImage", currentRequestsArrayList.get(holder.getAdapterPosition()).getProfileUrl());
-                                    startActivity(intent);
+
+                                    if (task.isSuccessful()) {
+
+                                        progressDialog.dismiss();
+                                        Intent intent = new Intent(NotoficationActivity.this, ConversationActivity.class);
+                                        intent.putExtra("chatName", auth.getCurrentUser().getUid() + "_" + currentRequestsArrayList.get(holder.getAdapterPosition()).getUid());
+                                        intent.putExtra("userName", currentRequestsArrayList.get(holder.getAdapterPosition()).getName());
+                                        intent.putExtra("userImage", currentRequestsArrayList.get(holder.getAdapterPosition()).getProfileUrl());
+                                        startActivity(intent);
+
+                                    } else {
+
+                                        Toast.makeText(NotoficationActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        Log.i(TAG, "onComplete: " + task.getException().getMessage());
+
+                                    }
                                 }
                             });
                 }

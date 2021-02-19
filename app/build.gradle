@@ -45,7 +45,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
 
     // Dexter Permission Library
-    //implementation 'com.karumi:dexter:5.0.0'
+    implementation 'com.karumi:dexter:5.0.0'
 
     // Wave Loading View
     implementation 'me.itangqi.waveloadingview:library:0.3.5'
@@ -65,6 +65,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.firebase:firebase-storage'
+
+    // ACCESS CURRENT LOCATION
+    implementation 'io.nlopez.smartlocation:library:3.3.3'
+//    implementation 'com.github.delight-im:Android-SimpleLocation:v1.1.0'
 
     // TRUE TIME LIBRARY
 //    implementation 'com.github.kk121:SecureTimer:v1.0'

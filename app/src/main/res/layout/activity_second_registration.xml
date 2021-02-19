@@ -243,6 +243,8 @@
                 <TextView
                     style="@style/parent"
                     android:layout_marginTop="@dimen/loginViewsMargin"
+                    android:textIsSelectable="true"
+                    android:id="@+id/othertextregistration"
                     android:gravity="center_horizontal"
                     android:text="You need to enter these details to continue."
                     android:textColor="@color/primaryTextColor"

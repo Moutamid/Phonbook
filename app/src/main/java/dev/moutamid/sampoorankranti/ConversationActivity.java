@@ -49,22 +49,28 @@ public class ConversationActivity extends AppCompatActivity {
         if (getIntent().hasExtra("chatName")){
 
             userNameTextView.setText(getIntent().getStringExtra("userName"));
-            Picasso.with(ConversationActivity.this).load("userImage").into(userProfileImageView);
+            Picasso.with(ConversationActivity.this)
+                    .load("userImage")
+                    .placeholder(R.color.lighterGrey)
+                    .into(userProfileImageView);
 
             chatName = getIntent().getStringExtra("chatName");
+
+            Log.d(TAG, "onCreate: chatName"+ chatName);
 
             DatabaseReference databaseChats = FirebaseDatabase.getInstance().getReference().child("chats");
 
             databaseChats.child(chatName).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Log.d(TAG, "onDataChange: ");
 
                     currentMessagesArrayList.clear();
 
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
                         currentMessagesArrayList.add(snapshot.getValue(ChatMessage.class));
-
+                        Log.i(TAG, "onDataChange: "+snapshot.getValue(ChatMessage.class).toString());
                     }
 
                     initRecyclerView();
@@ -96,6 +102,7 @@ public class ConversationActivity extends AppCompatActivity {
                     ChatMessage chatMessage = new ChatMessage(editText.getText().toString(), firebaseAuth.getCurrentUser().getUid());
 
                     adapter.addMessage(chatMessage);
+                    editText.setText("");
 
                 }
 

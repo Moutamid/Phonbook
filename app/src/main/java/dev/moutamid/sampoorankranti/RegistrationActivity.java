@@ -26,6 +26,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText nameEtSignUp, emailEtSignUp, passwordEtSignUp, confirmPasswordEtSignUp;
     private Button signUpBtn;
     private TextView alreadyAccountBtnSignUp;
+    private Utils utils = new Utils();
 
     private ProgressDialog progressDialog;
     private FirebaseAuth mAuth;
@@ -33,7 +34,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private void startSignUp() {
 
         //Getting the Text from the email and password EditTexts
-        String email = emailEtSignUp.getText().toString();
+        final String email = emailEtSignUp.getText().toString();
         String password = passwordEtSignUp.getText().toString();
         String confirmPassword = confirmPasswordEtSignUp.getText().toString();
         final String nickname = nameEtSignUp.getText().toString();
@@ -46,6 +47,56 @@ public class RegistrationActivity extends AppCompatActivity {
         progressDialog.show();
 
         // TextFields are not empty then this if statement occur
+
+        if (TextUtils.isEmpty(email)) {
+            //if text fields are emtpy..
+
+            progressDialog.dismiss();
+
+            emailFieldSignUp.setError("Email is required!");
+            emailFieldSignUp.requestFocus();
+            return;
+
+            //Toast.makeText(this, "Fields are Empty!", Toast.LENGTH_LONG).show();
+
+        }
+        if (TextUtils.isEmpty(password)) {
+            //if Password field are emtpy..
+
+            progressDialog.dismiss();
+
+            passwordFieldSignUp.setError("Password is required!");
+            passwordFieldSignUp.requestFocus();
+            return;
+
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            //if Email Address is Invalid..
+
+            progressDialog.dismiss();
+
+            emailFieldSignUp.setError("Please enter a valid email!");
+            emailFieldSignUp.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(nickname)) {
+            //if Nickname field are emtpy..
+
+            progressDialog.dismiss();
+
+            nameEtSignUp.setError("Name is required!");
+            nameEtSignUp.requestFocus();
+            return;
+        }
+        if (!password.equals(confirmPassword)) {
+            //if Nickname field are emtpy..
+
+            progressDialog.dismiss();
+
+            confirmPasswordEtSignUp.setError("Password doesn't match!");
+            confirmPasswordEtSignUp.requestFocus();
+            return;
+        }
 
         if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(nickname)) {
             //if text fields are not empty
@@ -92,12 +143,16 @@ public class RegistrationActivity extends AppCompatActivity {
                                     } else {
                                         //Task is successful..
 
+                                        utils.storeString(RegistrationActivity.this, "userNickname", nickname);
+                                        utils.storeString(RegistrationActivity.this, "userEmail", email);
+
+                                        mAuth.getCurrentUser().sendEmailVerification();
 
                                         progressDialog.dismiss();
 
-
                                         finish();
                                         Intent intent = new Intent(RegistrationActivity.this, SecondRegistrationActivity.class);
+                                        intent.putExtra("username", nickname);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(intent);
 
@@ -122,50 +177,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
             }
 
-        } else if (TextUtils.isEmpty(email)) {
-            //if text fields are emtpy..
-
-            progressDialog.dismiss();
-
-            emailFieldSignUp.setError("Email is required!");
-            emailFieldSignUp.requestFocus();
-            return;
-
-            //Toast.makeText(this, "Fields are Empty!", Toast.LENGTH_LONG).show();
-
-        } else if (TextUtils.isEmpty(password)) {
-            //if Password field are emtpy..
-
-            progressDialog.dismiss();
-
-            passwordFieldSignUp.setError("Password is required!");
-            passwordFieldSignUp.requestFocus();
-            return;
-
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            //if Email Address is Invalid..
-
-            progressDialog.dismiss();
-
-            emailFieldSignUp.setError("Please enter a valid email!");
-            emailFieldSignUp.requestFocus();
-            return;
-        } else if (TextUtils.isEmpty(nickname)) {
-            //if Nickname field are emtpy..
-
-            progressDialog.dismiss();
-
-            nameEtSignUp.setError("Name is required!");
-            nameEtSignUp.requestFocus();
-            return;
-        } else if (!password.equals(confirmPassword)) {
-            //if Nickname field are emtpy..
-
-            progressDialog.dismiss();
-
-            confirmPasswordEtSignUp.setError("Password doesn't match!");
-            confirmPasswordEtSignUp.requestFocus();
-            return;
         }
     }
 
@@ -198,7 +209,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void startSignIn() {
         //Getting the Text from the email and password EditTexts
-        String email = emailEtLogin.getText().toString();
+        final String email = emailEtLogin.getText().toString();
         String password = passwordEtLogin.getText().toString();
 
         //Setting Progress Dialog Message
@@ -231,8 +242,24 @@ public class RegistrationActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 //Task is successful..
 
-                                progressDialog.dismiss();
+                                if (email.equals("admin@gmail.com")) {
 
+                                    finish();
+                                    Intent intent = new Intent(RegistrationActivity.this, AdminDashboardActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                    return;
+
+                                }
+
+                                utils.storeString(RegistrationActivity.this, "userNickname", mAuth.getCurrentUser().getDisplayName());
+                                utils.storeString(RegistrationActivity.this, "userEmail", email);
+
+                                if (!mAuth.getCurrentUser().isEmailVerified()) {
+                                    mAuth.getCurrentUser().sendEmailVerification();
+                                }
+
+                                progressDialog.dismiss();
 
                                 finish();
                                 Intent intent = new Intent(RegistrationActivity.this, DashboardActivity.class);

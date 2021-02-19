@@ -1,10 +1,13 @@
 package dev.moutamid.sampoorankranti;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -14,6 +17,9 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -21,15 +27,64 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private DrawerLayout drawerLayout;
     private FrameLayout frameLayout;
     private NavigationView navigationView;
+    private FirebaseAuth firebaseAuth;
+    private Utils utils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        utils = new Utils();
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        if (checkCurrentActivity()) {
+            return;
+        }
 
         initializeViews();
         toggleDrawer();
         initializeDefaultFragment(savedInstanceState, 0);
+    }
+
+    private boolean checkCurrentActivity() {
+
+        //current_activity
+        //main
+        //second
+        //dashboard
+
+        if (utils.getStoredString(DashboardActivity.this, "current_activity").equals("Error")) {
+
+            finish();
+            Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+
+        }
+
+        utils.storeString(DashboardActivity.this, "current_activity", "dashboard");
+
+        if (utils.getStoredString(DashboardActivity.this, "current_activity").equals("main")) {
+
+            finish();
+            Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+
+        }
+
+        if (utils.getStoredString(DashboardActivity.this, "current_activity").equals("second")) {
+
+            finish();
+            Intent intent = new Intent(DashboardActivity.this, SecondRegistrationActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        }
+
+        return false;
     }
 
     private void initializeViews() {
@@ -55,14 +110,32 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
         });
 
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid())
+                .child("isEmailVerified")
+                .setValue(firebaseAuth.getCurrentUser().isEmailVerified());
+
+        setHeaderDetails();
     }
 
-    private void setHeaderDetails(String name) {
+    private void setHeaderDetails() {
+
+//        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
         View header = navigationView.getHeaderView(0);
 
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
         //private SwitchCompat urduSwitch;
-//        TextView nav_name = (TextView) header.findViewById(R.id.nav_header_email_id);
-//        TextView nav_phone_number = (TextView) header.findViewById(R.id.nav_header_email_status_id);
+        TextView nav_name = (TextView) header.findViewById(R.id.nav_header_email_id);
+        TextView nav_emailstatus = (TextView) header.findViewById(R.id.nav_header_email_status_id);
+
+//        nav_name.setText(firebaseAuth.getCurrentUser().getEmail());
+        nav_name.setText(utils.getStoredString(DashboardActivity.this, "userEmail"));
+        if (firebaseAuth.getCurrentUser().isEmailVerified())
+            nav_emailstatus.setText("Verified!");
+        else nav_emailstatus.setText("Not verified!");
 
 //        String number = utils.getStoredString(MainActivity.this, USER_EMAIL);
 //        String name = utils.getStoredString(MainActivity.this, USER_NUMBER);
@@ -109,10 +182,43 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 break;
             case R.id.nav_logout_id:
                 closeDrawer();
-//                showLogoutDialog();
+                showLogoutDialog();
                 break;
         }
         return true;
+    }
+
+    private void showLogoutDialog() {
+
+        utils.showDialog(DashboardActivity.this,
+                "Are you sure!",
+                "You really want to logout?",
+                "Yes",
+                "No",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // LOGOUT
+                        firebaseAuth.signOut();
+                        utils.removeSharedPref(DashboardActivity.this);
+
+                        finish();
+                        Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+
+                        Toast.makeText(DashboardActivity.this, "Logged out!", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+                    }
+                },
+                true
+        );
     }
 
     /**

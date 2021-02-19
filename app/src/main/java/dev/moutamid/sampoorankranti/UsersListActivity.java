@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,28 +22,33 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class UsersListActivity extends AppCompatActivity {
+    private static final String TAG = "UsersListActivity";
+    private ArrayList<UserCompleteDetailsModel> userDetailsList = new ArrayList<>();
 
-    private ArrayList<UserCompleteDetailsModel> userDetailsList;
-
-    private static final String TAG = "NotoficationActivity";
     private RecyclerView conversationRecyclerView;
     private RecyclerViewAdapterMessages adapter;
+
+    private ProgressDialog progressDialog;
+    private String mNoStr, districtStr, villageStr, wardStr, categoryStr = null;
 
     private FirebaseAuth mAuth;
 
     private static class UserCompleteDetailsModel {
         private String uid, name, email, profileUrl, mNo, district, village, ward, category;
+        private boolean isEmailVerified;
 
-        public UserCompleteDetailsModel(String uid, String name, String email, String profileUrl, String mNo, String district, String village, String ward, String category) {
+        public UserCompleteDetailsModel(String uid, String name, String email, String profileUrl, String mNo, String district, String village, String ward, String category, boolean isEmailVerified) {
+            this.isEmailVerified = isEmailVerified;
             this.uid = uid;
             this.name = name;
             this.email = email;
@@ -52,6 +58,14 @@ public class UsersListActivity extends AppCompatActivity {
             this.village = village;
             this.ward = ward;
             this.category = category;
+        }
+
+        public boolean isEmailVerified() {
+            return isEmailVerified;
+        }
+
+        public void setEmailVerified(boolean emailVerified) {
+            isEmailVerified = emailVerified;
         }
 
         public String getUid() {
@@ -128,7 +142,95 @@ public class UsersListActivity extends AppCompatActivity {
 
         UserCompleteDetailsModel() {
         }
+    }
 
+    private void searchUserByQuery(String orderByChild, String equalTo) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("users").orderByChild(orderByChild).equalTo(equalTo)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        userDetailsList.clear();
+
+                        if (snapshot.exists()) {
+
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+
+                                String uid = dataSnapshot.getKey();
+                                UserCompleteDetailsModel detailsModel = dataSnapshot.getValue(UserCompleteDetailsModel.class);
+                                detailsModel.setUid(uid);
+
+                                userDetailsList.add(detailsModel);
+
+                                //Toast.makeText(getActivity(), key, Toast.LENGTH_SHORT).show();
+                            }
+
+                            // FOR FILTERING THE ENTRIES WITH M_NO
+                            for (int i = 0; i <= userDetailsList.size() - 1; i++) {
+
+                                if (!userDetailsList.get(i).getmNo().equals(mNoStr)) {
+                                    userDetailsList.remove(i);
+                                }
+
+                            }
+                            // FOR FILTERING THE ENTRIES WITH DISTRICTS
+                            for (int i = 0; i <= userDetailsList.size() - 1; i++) {
+
+                                if (!userDetailsList.get(i).getDistrict().equals(districtStr)) {
+                                    userDetailsList.remove(i);
+                                }
+
+                            }
+                            // FOR FILTERING THE ENTRIES WITH VILLAGES
+                            for (int i = 0; i <= userDetailsList.size() - 1; i++) {
+
+                                if (!userDetailsList.get(i).getVillage().equals(villageStr)) {
+                                    userDetailsList.remove(i);
+                                }
+
+                            }
+                            // FOR FILTERING THE ENTRIES WITH WARD
+                            for (int i = 0; i <= userDetailsList.size() - 1; i++) {
+
+                                if (!userDetailsList.get(i).getWard().equals(wardStr)) {
+                                    userDetailsList.remove(i);
+                                }
+
+                            }
+
+                            // FOR FILTERING MY OWN USER ENTRY
+                            for (int i = 0; i <= userDetailsList.size() - 1; i++) {
+
+                                if (userDetailsList.get(i).getUid().equals(mAuth.getCurrentUser().getUid())) {
+                                    userDetailsList.remove(i);
+                                }
+
+                            }
+
+                            if (userDetailsList.size() == 0) {
+                                progressDialog.dismiss();
+                                Toast.makeText(UsersListActivity.this, "No user found with this filter!", Toast.LENGTH_SHORT).show();
+                            } else {
+
+                                progressDialog.dismiss();
+
+                                initRecyclerView();
+
+                            }
+
+                        } else {
+                            progressDialog.dismiss();
+                            Toast.makeText(UsersListActivity.this, "No user exist!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.i("TAG", "onCancelled: verify if member exists" + error.toException().getMessage());
+                        Toast.makeText(UsersListActivity.this, error.toException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private static class RequestModel {
@@ -174,15 +276,30 @@ public class UsersListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_list);
 
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading...");
+
         mAuth = FirebaseAuth.getInstance();
 
         // GETTING DATA FROM FILTERCHAT ACTIVITY
         Intent intent = getIntent();
-        Bundle args = intent.getBundleExtra("BUNDLE");
-        userDetailsList = (ArrayList<UserCompleteDetailsModel>) args.getSerializable("USERSLIST");
+//        Bundle args = intent.getBundleExtra("BUNDLE");
+//        userDetailsList = (ArrayList<UserCompleteDetailsModel>) args.getSerializable("USERSLIST");
 
-        initRecyclerView();
 
+        if (intent.hasExtra("category")) {
+
+            progressDialog.show();
+
+            categoryStr = intent.getStringExtra("category");
+            mNoStr = intent.getStringExtra("mNo");
+            districtStr = intent.getStringExtra("district");
+            villageStr = intent.getStringExtra("village");
+            wardStr = intent.getStringExtra("ward");
+
+            searchUserByQuery("category", categoryStr);
+
+        }
     }
 
     private void initRecyclerView() {
@@ -307,7 +424,7 @@ public class UsersListActivity extends AppCompatActivity {
         @NonNull
         @Override
         public RecyclerViewAdapterMessages.ViewHolderRightMessage onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_notification_request, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_users_list, parent, false);
             return new RecyclerViewAdapterMessages.ViewHolderRightMessage(view);
         }
 
@@ -318,8 +435,12 @@ public class UsersListActivity extends AppCompatActivity {
 
             Picasso.with(UsersListActivity.this)
                     .load(userDetailsList.get(holder.getAdapterPosition()).getProfileUrl())
+                    .placeholder(R.color.lighterGrey)
                     .into(holder.profileImageview);
-            holder.requestBtn.setText("REQUEST");
+
+            if (userDetailsList.get(holder.getAdapterPosition()).isEmailVerified){
+                holder.verifiedImageView.setVisibility(View.VISIBLE);
+            }
 
             holder.requestBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -372,14 +493,15 @@ public class UsersListActivity extends AppCompatActivity {
         public class ViewHolderRightMessage extends RecyclerView.ViewHolder {
 
             TextView rightText;
-            CircleImageView profileImageview;
+            ImageView profileImageview, verifiedImageView;
             Button requestBtn;
 
             public ViewHolderRightMessage(@NonNull View v) {
                 super(v);
-                rightText = v.findViewById(R.id.nametextviewnotification);
-                profileImageview = v.findViewById(R.id.profileImagelayoutnotificationrequest);
-                requestBtn = v.findViewById(R.id.acceptrequestbtnlayoutnotificationrequest);
+                rightText = v.findViewById(R.id.nametextviewnotification1);
+                profileImageview = v.findViewById(R.id.profileImagelayoutnotificationrequest1);
+                requestBtn = v.findViewById(R.id.acceptrequestbtnlayoutnotificationrequest1);
+                verifiedImageView = v.findViewById(R.id.verifiedImageviewuserlist);
             }
         }
 

@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".NeedHelpFormActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="Help Form"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
+
+            <RelativeLayout
+                android:id="@+id/current_balance_layout_dashboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#2DB62D"
+
+                >
+
+                <ImageView
+                    android:id="@+id/profileimageneedhelpform"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:scaleType="center"
+                    android:src="@drawable/image" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/profileimageneedhelpform"
+                    android:layout_toRightOf="@id/profileimageneedhelpform"
+                    android:gravity="center"
+                    android:text="Please help me here."
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/numberlayoutneedhelpform"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp">
+
+                <View
+                    android:id="@+id/middleline1"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:background="#DCBEBEBE" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@id/middleline2"
+                    android:layout_alignRight="@id/middleline2"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:layout_marginRight="1dp"
+                    android:gravity="center"
+                    android:text="Please contact"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/middleline2"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="95dp"
+                    android:layout_marginLeft="95dp"
+                    android:background="#DCBEBEBE" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:id="@+id/numberTextviewneedhelpform"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@id/middleline2"
+                    android:layout_alignLeft="@id/middleline2"
+                    android:layout_alignEnd="@id/middleline3"
+                    android:layout_alignRight="@id/middleline3"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="0123456789"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/middleline3"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:background="#DCBEBEBE" />
+
+                <View
+                    android:id="@+id/middleline4"
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#DCBEBEBE" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp">
+
+                <View
+                    android:id="@+id/middleline11"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:background="#DCBEBEBE" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@id/middleline22"
+                    android:layout_alignRight="@id/middleline22"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:layout_marginRight="1dp"
+                    android:gravity="center"
+                    android:text="STATE"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/middleline22"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="95dp"
+                    android:layout_marginLeft="95dp"
+                    android:background="#DCBEBEBE" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/stateTextviewneedhelpform"
+                    android:layout_alignStart="@id/middleline22"
+                    android:layout_alignLeft="@id/middleline22"
+                    android:layout_alignEnd="@id/middleline33"
+                    android:layout_alignRight="@id/middleline33"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="Jharkand"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/middleline33"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:background="#DCBEBEBE" />
+
+                <View
+                    android:id="@+id/middleline44"
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#DCBEBEBE" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#DCBEBEBE">
+
+                <View
+                    android:id="@+id/middleline111"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:background="#DCBEBEBE" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@id/middleline222"
+                    android:layout_alignRight="@id/middleline222"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:layout_marginRight="1dp"
+                    android:gravity="center"
+                    android:text="DISTRICT"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/middleline222"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="95dp"
+                    android:layout_marginLeft="95dp"
+                    android:background="#DCBEBEBE" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/districtTextviewneedhelpform"
+                    android:layout_alignStart="@id/middleline222"
+                    android:layout_alignLeft="@id/middleline222"
+                    android:layout_alignEnd="@id/middleline333"
+                    android:layout_alignRight="@id/middleline333"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="Dhanbad"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/middleline333"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:background="#DCBEBEBE" />
+
+                <View
+                    android:id="@+id/middleline444"
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#DCBEBEBE" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#DCBEBEBE">
+
+                <View
+                    android:id="@+id/middleline111111"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:background="#DCBEBEBE" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@id/middleline2222"
+                    android:layout_alignRight="@id/middleline2222"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:layout_marginRight="1dp"
+                    android:gravity="center"
+                    android:text="WARD NO"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/middleline2222"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="95dp"
+                    android:layout_marginLeft="95dp"
+                    android:background="#DCBEBEBE" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/wardTextviewneedhelpform"
+                    android:layout_alignStart="@id/middleline2222"
+                    android:layout_alignLeft="@id/middleline2222"
+                    android:layout_alignEnd="@id/middleline3333"
+                    android:layout_alignRight="@id/middleline3333"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="29"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/middleline3333"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:background="#DCBEBEBE" />
+
+                <View
+                    android:id="@+id/middleline4444"
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#DCBEBEBE" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp">
+
+                <View
+                    android:id="@+id/middleline11111"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:background="#DCBEBEBE" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@id/middleline22222"
+                    android:layout_alignRight="@id/middleline22222"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:layout_marginRight="1dp"
+                    android:gravity="center"
+                    android:text="LOCATION"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/middleline22222"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="95dp"
+                    android:layout_marginLeft="95dp"
+                    android:background="#DCBEBEBE" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/locationTextviewneedhelpform"
+                    android:layout_alignStart="@id/middleline22222"
+                    android:layout_alignLeft="@id/middleline22222"
+                    android:layout_alignEnd="@id/middleline33333"
+                    android:layout_alignRight="@id/middleline33333"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center"
+                    android:text="Gomoh, Rd, Khario, Jharlhand, India"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/middleline33333"
+                    android:layout_width="5dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:background="#DCBEBEBE" />
+
+                <View
+                    android:id="@+id/middleline44444"
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#DCBEBEBE" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/green">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:id="@+id/gotoLocationTextviewneedhelpform"
+                    android:text="Go at location"
+                    android:textColor="@color/white"
+                    android:textSize="25sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp">
+
+                <View
+                    android:id="@+id/middleline1111111"
+                    android:layout_width="5dp"
+                    android:layout_height="100dp"
+                    android:background="#DCBEBEBE" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@id/middleline222222"
+                    android:layout_alignRight="@id/middleline222222"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:layout_marginRight="1dp"
+                    android:gravity="center"
+                    android:text="STATUS"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/middleline222222"
+                    android:layout_width="5dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="95dp"
+                    android:layout_marginLeft="95dp"
+                    android:background="#DCBEBEBE" />
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/verificationStatusImageviewneedhelpform"
+                    android:layout_marginEnd="10dp"
+                    android:scaleType="centerInside"
+                    android:layout_marginRight="10dp"
+                    android:layout_toStartOf="@id/middleline333333"
+                    android:layout_toLeftOf="@id/middleline333333"
+                    android:layout_toEndOf="@id/middleline222222"
+                    android:layout_toRightOf="@id/middleline222222"
+                    android:src="@drawable/not_verified" />
+
+                <View
+                    android:id="@+id/middleline333333"
+                    android:layout_width="5dp"
+                    android:layout_height="100dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:background="#DCBEBEBE" />
+
+                <View
+                    android:id="@+id/middleline444444"
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#DCBEBEBE" />
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
