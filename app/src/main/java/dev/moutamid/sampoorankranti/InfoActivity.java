@@ -1,6 +1,7 @@
 package dev.moutamid.sampoorankranti;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -48,6 +49,12 @@ public class InfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_info);
         Log.d(TAG, "onCreate: ");
 
+        if (!utils.getStoredString(InfoActivity.this, "latitudeStr").equals("Error")) {
+
+            startActivity(new Intent(InfoActivity.this, NeedHelpFormActivity.class));
+
+        }
+
         initViews();
 
     }
@@ -81,7 +88,11 @@ public class InfoActivity extends AppCompatActivity {
 
             case "getLocation":
 
-                checkIfNetworkIsAvailable();
+                textView.setText("35,7635473 76,67325436");
+                latitudeStr = "35,7635473";
+                longitudeStr = "76,67325436";
+
+//                checkIfNetworkIsAvailable();
 
 //                Toast.makeText(this, "Get location", Toast.LENGTH_SHORT).show();
                 break;
@@ -93,7 +104,24 @@ public class InfoActivity extends AppCompatActivity {
 
         int permissionState = ActivityCompat.checkSelfPermission(InfoActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
-        if (permissionState == PackageManager.PERMISSION_GRANTED){
+        if (permissionState == PackageManager.PERMISSION_GRANTED) {
+
+            // PERMISSION GRANTED
+            // ACCESSING LOCATION
+
+            final ProgressDialog progressDialog = new ProgressDialog(InfoActivity.this);
+            progressDialog.setMessage("Getting your location...");
+            progressDialog.show();
+//            SmartLocation.with(InfoActivity.this).location().oneFix().start(new OnLocationUpdatedListener() {
+//                @Override
+//                public void onLocationUpdated(Location location) {
+//                    latitudeStr = String.valueOf(location.getLatitude());
+//                    longitudeStr = String.valueOf(location.getLongitude());
+//                    progressDialog.dismiss();
+//                    Toast.makeText(InfoActivity.this, location.getLatitude() + " " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+//                }
+//            });
+
             return;
         }
 
@@ -104,19 +132,24 @@ public class InfoActivity extends AppCompatActivity {
                     public void onPermissionGranted(PermissionGrantedResponse response) {
                         // PERMISSION GRANTED
                         // ACCESSING LOCATION
+
+                        final ProgressDialog progressDialog = new ProgressDialog(InfoActivity.this);
+                        progressDialog.setMessage("Getting your location...");
+                        progressDialog.show();
                         SmartLocation.with(InfoActivity.this).location().oneFix().start(new OnLocationUpdatedListener() {
                             @Override
                             public void onLocationUpdated(Location location) {
                                 latitudeStr = String.valueOf(location.getLatitude());
                                 longitudeStr = String.valueOf(location.getLongitude());
-                                Toast.makeText(InfoActivity.this, location.getLatitude()+" "+location.getLongitude(), Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                                Toast.makeText(InfoActivity.this, location.getLatitude() + " " + location.getLongitude(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
 
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse response) {
-                        if (response.isPermanentlyDenied()){
+                        if (response.isPermanentlyDenied()) {
                             Toast.makeText(InfoActivity.this, "You need to allow location to use this feature", Toast.LENGTH_SHORT).show();
                             openSettings();
                         }
@@ -141,13 +174,13 @@ public class InfoActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        SmartLocation.with(InfoActivity.this).location().stop();
+//        SmartLocation.with(InfoActivity.this).location().stop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SmartLocation.with(InfoActivity.this).location().stop();
+  //      SmartLocation.with(InfoActivity.this).location().stop();
     }
 
     private void showVillagesOptionsDialog(final TextView tv, final CharSequence[] items) {
@@ -209,7 +242,7 @@ public class InfoActivity extends AppCompatActivity {
                 utils.storeString(InfoActivity.this, "latitudeStr", latitudeStr);
                 utils.storeString(InfoActivity.this, "longitudeStr", longitudeStr);
                 if (isChecked)
-                utils.storeString(InfoActivity.this, "userNumberStr", userNumberStr);
+                    utils.storeString(InfoActivity.this, "userNumberStr", userNumberStr);
 
 
                 startActivity(new Intent(InfoActivity.this, NeedHelpFormActivity.class));

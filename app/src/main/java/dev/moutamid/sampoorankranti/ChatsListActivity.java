@@ -48,6 +48,11 @@ public class ChatsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chats_list);
 
+        startActivity(new Intent(ChatsListActivity.this, FilterChatActivity.class));
+
+    }
+
+    private void initList() {
         auth = FirebaseAuth.getInstance();
 
         DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference();
@@ -133,7 +138,6 @@ public class ChatsListActivity extends AppCompatActivity {
                 startActivity(new Intent(ChatsListActivity.this, FilterChatActivity.class));
             }
         });
-
     }
 
     private static class USER {

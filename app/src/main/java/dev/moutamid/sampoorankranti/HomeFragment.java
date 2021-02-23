@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         view.findViewById(R.id.infobtnfragmenthome).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), FilterChatActivity.class));
+                startActivity(new Intent(getActivity(), InfoActivity.class));
             }
         });
         view.findViewById(R.id.advertisebtnfragmenthome).setOnClickListener(new View.OnClickListener() {

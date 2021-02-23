@@ -110,11 +110,17 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
         });
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid())
-                .child("isEmailVerified")
-                .setValue(firebaseAuth.getCurrentUser().isEmailVerified());
+        try {
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+            if (firebaseAuth.getCurrentUser() != null)
+            databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid())
+                    .child("isEmailVerified")
+                    .setValue(firebaseAuth.getCurrentUser().isEmailVerified());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         setHeaderDetails();
     }
@@ -133,6 +139,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 //        nav_name.setText(firebaseAuth.getCurrentUser().getEmail());
         nav_name.setText(utils.getStoredString(DashboardActivity.this, "userEmail"));
+        if (firebaseAuth.getCurrentUser() != null)
         if (firebaseAuth.getCurrentUser().isEmailVerified())
             nav_emailstatus.setText("Verified!");
         else nav_emailstatus.setText("Not verified!");
@@ -142,6 +149,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 //        nav_phone_number.setText(number.substring(0, 11));
 //        nav_name.setText(name);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (firebaseAuth.getCurrentUser() == null){
+
+            finish();
+            Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+
+        }
 
     }
 

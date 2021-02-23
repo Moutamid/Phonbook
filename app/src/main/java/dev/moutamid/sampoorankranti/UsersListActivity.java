@@ -454,28 +454,45 @@ public class UsersListActivity extends AppCompatActivity {
                     final SharedPreferences sharedPreferences = getSharedPreferences("dev.moutamid.sampoorankranti", Context.MODE_PRIVATE);
 
                     final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                    databaseReference.child("requests")
-                            .child(userDetailsList.get(holder.getAdapterPosition()).getUid())
-                            .push()
-                            .setValue(new RequestModel(
-                                    mAuth.getCurrentUser().getUid(),
-                                    mAuth.getCurrentUser().getDisplayName(),
-                                    sharedPreferences.getString("myprofilelink", "error")
-                            )).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            final String name = snapshot.child("users").child(mAuth.getCurrentUser().getUid())
+                                    .child("name").getValue(String.class);
 
-                                progressDialog.dismiss();
+                            databaseReference.child("requests")
+                                    .child(userDetailsList.get(holder.getAdapterPosition()).getUid())
+                                    .push()
+                                    .setValue(new RequestModel(
+                                            mAuth.getCurrentUser().getUid(),
+                                            name,
+                                            sharedPreferences.getString("myprofilelink", "error")
+                                    )).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
 
-                                Toast.makeText(UsersListActivity.this, "Request sent!", Toast.LENGTH_SHORT).show();
-                                holder.requestBtn.setVisibility(View.GONE);
-                            } else {
-                                progressDialog.dismiss();
-                                Toast.makeText(UsersListActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+                                        progressDialog.dismiss();
+
+                                        Toast.makeText(UsersListActivity.this, "Request sent!", Toast.LENGTH_SHORT).show();
+                                        holder.requestBtn.setVisibility(View.GONE);
+                                    } else {
+                                        progressDialog.dismiss();
+                                        Toast.makeText(UsersListActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
                         }
                     });
+
+
 
                 }
             });
